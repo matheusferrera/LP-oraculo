@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Oraculo</title>
+    <!-- Adicionado favicon -->
+    <link rel="icon" href="fav.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="fav.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header__container">
+        <a href="#hero" class="header__logo">
+          <span class="header__logo-icon">
+            <svg viewBox="0 0 2050 2050" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+              <g clip-path="url(#clip0_header)">
+                <path
+                  d="M1339.14 713.13V50.698C1238.98 16.552 1131.99 0.617188 1025 0.617188C908.901 0.617188 792.804 21.1048 685.814 57.5272L1336.86 708.578L1339.14 713.13ZM1339.14 1336.86L1336.86 1339.14H2001.57C2033.44 1238.98 2049.38 1131.99 2049.38 1025C2049.38 908.901 2028.89 792.804 1992.47 685.814L1339.14 1336.86ZM1468.9 100.779V1027.27L1937.83 558.335C1835.4 360.288 1669.22 198.664 1468.9 100.779ZM1022.72 1468.9L1491.66 1937.83C1689.71 1835.4 1851.33 1669.22 1949.22 1468.9H1022.72ZM710.854 1999.3C811.016 2033.44 918.006 2049.38 1025 2049.38C1141.09 2049.38 1257.19 2028.89 1364.18 1992.47L710.854 1336.86V1999.3ZM1027.27 581.099L558.335 112.161C360.288 214.599 198.664 380.776 100.779 581.099H1027.27ZM713.13 710.854H50.698C16.552 811.016 0.617188 918.006 0.617188 1025C0.617188 1141.09 21.1048 1257.19 57.5272 1364.18L708.578 713.13L713.13 710.854ZM581.099 1949.22V1022.72L112.161 1491.66C214.599 1689.71 380.776 1851.33 581.099 1949.22Z"
+                  fill="currentColor"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_header">
+                  <rect width="2048.76" height="2048.76" fill="#fff" transform="translate(0.617188 0.617188)" />
+                </clipPath>
+              </defs>
+            </svg>
+          </span>
+          <span class="header__logo-text">Oráculo Tecnologia</span>
+        </a>
+        <nav class="header__nav">
+          <ul class="nav-list">
+            <li><a href="#hero" class="nav-link">Home</a></li>
+            <li><a href="#servicos" class="nav-link">Serviços</a></li>
+            <li><a href="#testemunhos" class="nav-link">Testemunhos</a></li>
+            <li><a href="#fechar-negocio" class="nav-link">Contato</a></li>
+          </ul>
+        </nav>
+        <button class="nav-toggle" aria-label="Toggle navigation menu">
+          <span class="nav-toggle__line"></span>
+          <span class="nav-toggle__line"></span>
+          <span class="nav-toggle__line"></span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero" id="hero">
+      <div class="hero__container">
+        <!-- TEXTO À ESQUERDA -->
+        <div class="hero__left">
+          <h1>Pronto para Triplicar suas Vendas em 90 Dias?</h1>
+          <p>
+            Descubra como nossas estratégias comprovadas de tráfego pago e IA podem gerar 300% mais ROI.
+            <span class="hero-highlight">Agende sua consultoria gratuita</span>
+            agora e veja resultados reaisem semanas, não meses. Não perca mais oportunidades – seu crescimento começa
+            hoje!
+          </p>
+          <a href="#" class="hero__cta">Agendar Consultoria Gratuita Agora</a>
+        </div>
+
+        <!-- SVG À DIREITA (INLINE) -->
+        <div class="hero__right">
+          <div class="logo-wrap logo-color" aria-label="Marca Oráculo em tons de branco">
+            <div class="logo-rotate">
+              <!-- Substituímos fill por currentColor para permitir a animação via CSS -->
+              <svg viewBox="0 0 2050 2050" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                <g clip-path="url(#clip0_201_4)">
+                  <path
+                    d="M1339.14 713.13V50.698C1238.98 16.552 1131.99 0.617188 1025 0.617188C908.901 0.617188 792.804 21.1048 685.814 57.5272L1336.86 708.578L1339.14 713.13ZM1339.14 1336.86L1336.86 1339.14H2001.57C2033.44 1238.98 2049.38 1131.99 2049.38 1025C2049.38 908.901 2028.89 792.804 1992.47 685.814L1339.14 1336.86ZM1468.9 100.779V1027.27L1937.83 558.335C1835.4 360.288 1669.22 198.664 1468.9 100.779ZM1022.72 1468.9L1491.66 1937.83C1689.71 1835.4 1851.33 1669.22 1949.22 1468.9H1022.72ZM710.854 1999.3C811.016 2033.44 918.006 2049.38 1025 2049.38C1141.09 2049.38 1257.19 2028.89 1364.18 1992.47L710.854 1336.86V1999.3ZM1027.27 581.099L558.335 112.161C360.288 214.599 198.664 380.776 100.779 581.099H1027.27ZM713.13 710.854H50.698C16.552 811.016 0.617188 918.006 0.617188 1025C0.617188 1141.09 21.1048 1257.19 57.5272 1364.18L708.578 713.13L713.13 710.854ZM581.099 1949.22V1022.72L112.161 1491.66C214.599 1689.71 380.776 1851.33 581.099 1949.22Z"
+                    fill="currentColor"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_201_4">
+                    <rect width="2048.76" height="2048.76" fill="#fff" transform="translate(0.617188 0.617188)" />
+                  </clipPath>
+                </defs>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="servicos">
+      <div class="section__container">
+        <h2 class="section__title">Nossos Serviços</h2>
+        <p class="section__subtitle">
+          Estratégias completas para aquisição e retenção: do criativo à otimização contínua, com apoio de IA para
+          acelerar resultados.
+        </p>
+
+        <!-- Carousel de Serviços -->
+        <div class="carousel-container">
+          <div class="carousel-wrapper">
+            <div class="features__grid" id="servicesCarousel">
+              <div class="feature__card feature__card--highlight">
+                <div class="feature__badge">Mais Popular</div>
+                <div class="feature__header">
+                  <div class="feature__icon">🚀</div>
+                  <h3 class="feature__title">Tráfego Pago Estratégico</h3>
+                </div>
+                <p class="feature__desc">
+                  Gestão completa de campanhas em Meta Ads, Google Ads e TikTok Ads com foco em ROI máximo. Inclui
+                  análise de concorrência, segmentação avançada e otimização contínua baseada em dados.
+                </p>
+                <ul class="feature__list">
+                  <li>Setup e otimização de campanhas</li>
+                  <li>Análise de métricas e KPIs</li>
+                  <li>Suporte técnico dedicado</li>
+                </ul>
+              </div>
+
+              <div class="feature__card">
+                <div class="feature__header">
+                  <div class="feature__icon">🎨</div>
+                  <h3 class="feature__title">Criativos e Copywriting</h3>
+                </div>
+                <p class="feature__desc">
+                  Produção e testes A/B de variações criativas orientadas por dados. Criamos conteúdo que converte,
+                  desde hooks impactantes até CTAs persuasivos.
+                </p>
+                <ul class="feature__list">
+                  <li>Criação de vídeos e imagens</li>
+                  <li>Copywriting persuasivo</li>
+                  <li>Testes A/B contínuos</li>
+                  <li>Banco de criativos vencedores</li>
+                </ul>
+              </div>
+
+              <div class="feature__card">
+                <div class="feature__header">
+                  <div class="feature__icon">🤖</div>
+                  <h3 class="feature__title">Automações com IA</h3>
+                </div>
+                <p class="feature__desc">
+                  Funis inteligentes, chatbots avançados e integrações personalizadas para acelerar atendimento,
+                  qualificação de leads e conversão de vendas.
+                </p>
+                <ul class="feature__list">
+                  <li>Chatbots inteligentes</li>
+                  <li>Funis de conversão automatizados</li>
+                  <li>Integrações com CRM</li>
+                  <li>Análise preditiva de leads</li>
+                </ul>
+              </div>
+
+              <div class="feature__card">
+                <div class="feature__header">
+                  <div class="feature__icon">📄</div>
+                  <h3 class="feature__title">Criação de Landing Pages</h3>
+                </div>
+                <p class="feature__desc">
+                  Desenvolvimento de landing pages otimizadas para conversão, com design responsivo e foco em UX/UI para
+                  maximizar suas vendas.
+                </p>
+                <ul class="feature__list">
+                  <li>Design responsivo e moderno</li>
+                  <li>Otimização para SEO</li>
+                  <li>Integração com marketing</li>
+                  <li>Testes A/B e análise de performance</li>
+                </ul>
+              </div>
+
+              <div class="feature__card">
+                <div class="feature__header">
+                  <div class="feature__icon">🎯</div>
+                  <h3 class="feature__title">Estratégia Digital</h3>
+                </div>
+                <p class="feature__desc">
+                  Consultoria estratégica completa para definir posicionamento, personas, jornada do cliente e mix de
+                  canais ideal para seu negócio.
+                </p>
+                <ul class="feature__list">
+                  <li>Auditoria digital completa</li>
+                  <li>Definição de personas</li>
+                  <li>Mapeamento da jornada</li>
+                  <li>Plano estratégico 360°</li>
+                </ul>
+              </div>
+
+              <div class="feature__card">
+                <div class="feature__header">
+                  <div class="feature__icon">⚡</div>
+                  <h3 class="feature__title">Otimização de Conversão</h3>
+                </div>
+                <p class="feature__desc">
+                  CRO avançado com testes multivariados, análise de heatmaps e otimização de landing pages para
+                  maximizar suas taxas de conversão.
+                </p>
+                <ul class="feature__list">
+                  <li>Auditoria de conversão</li>
+                  <li>Testes A/B de páginas</li>
+                  <li>Análise de comportamento</li>
+                  <li>Otimização de checkout</li>
+                </ul>
+              </div>
+              <div class="feature__card">
+                <div class="feature__header">
+                  <div class="feature__icon">📱</div>
+                  <h3 class="feature__title">Criação de Aplicativos</h3>
+                </div>
+                <p class="feature__desc">
+                  Desenvolvimento de aplicativos móveis e web personalizados, utilizando tecnologias modernas para
+                  atender às necessidades do seu negócio.
+                </p>
+                <ul class="feature__list">
+                  <li>Aplicativos móveis (iOS/Android)</li>
+                  <li>Aplicativos web progressivos</li>
+                  <li>Integração com APIs e sistemas</li>
+                  <li>UI/UX design intuitivo</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles de Navegação -->
+          <div class="carousel-nav">
+            <button class="carousel-btn" id="prevBtn" aria-label="Serviço anterior">‹</button>
+            <div class="carousel-indicators" id="carouselIndicators">
+              <!-- Indicadores serão gerados dinamicamente pelo JavaScript -->
+            </div>
+            <button class="carousel-btn" id="nextBtn" aria-label="Próximo serviço">›</button>
+          </div>
+        </div>
+
+        <!-- Botão de Conversão -->
+        <div class="conversion-cta-section">
+          <div class="conversion-cta-content">
+            <h3 class="conversion-cta-title">Pronto para acelerar seus resultados?</h3>
+            <p class="conversion-cta-subtitle">
+              Agende uma consultoria gratuita e descubra como podemos triplicar seu ROI em 90 dias
+            </p>
+            <a href="#" class="conversion-cta-button" id="conversionBtn">
+              <span class="conversion-cta-text">Quero uma Consultoria Gratuita</span>
+              <span class="conversion-cta-icon">🚀</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção de Oráculos -->
+    <section class="section" id="oraculos">
+      <div class="oraculos__container">
+        <div class="oraculos__content">
+          <div class="oraculos__marquee">
+            <div class="oraculos__track">
+              <span class="oraculo__item"
+                >🔮 "O futuro pertence àqueles que veem possibilidades antes que se tornem óbvias"</span
+              >
+              <span class="oraculo__item">⚡ "Dados sem ação são apenas números. Ação sem dados é apenas sorte"</span>
+              <span class="oraculo__item">🚀 "A inovação distingue um líder de um seguidor"</span>
+              <span class="oraculo__item"
+                >🎯 "Estratégia sem execução é alucinação. Execução sem estratégia é caos"</span
+              >
+              <span class="oraculo__item">💡 "O sucesso digital não é sobre tecnologia, é sobre transformação"</span>
+              <span class="oraculo__item"
+                >📊 "Meça o que importa, otimize o que funciona, elimine o que não agrega"</span
+              >
+              <span class="oraculo__item">🤖 "A IA não substitui a criatividade humana, ela a amplifica"</span>
+              <span class="oraculo__item">🎨 "Criatividade orientada por dados é a nova vantagem competitiva"</span>
+              <!-- Duplicação para loop infinito -->
+              <span class="oraculo__item"
+                >🔮 "O futuro pertence àqueles que veem possibilidades antes que se tornem óbvias"</span
+              >
+              <span class="oraculo__item">⚡ "Dados sem ação são apenas números. Ação sem dados é apenas sorte"</span>
+              <span class="oraculo__item">🚀 "A inovação distingue um líder de um seguidor"</span>
+              <span class="oraculo__item"
+                >🎯 "Estratégia sem execução é alucinação. Execução sem estratégia é caos"</span
+              >
+              <span class="oraculo__item">💡 "O sucesso digital não é sobre tecnologia, é sobre transformação"</span>
+              <span class="oraculo__item"
+                >📊 "Meça o que importa, otimize o que funciona, elimine o que não agrega"</span
+              >
+              <span class="oraculo__item">🤖 "A IA não substitui a criatividade humana, ela a amplifica"</span>
+              <span class="oraculo__item">🎨 "Criatividade orientada por dados é a nova vantagem competitiva"</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="testemunhos">
+      <div class="section__container">
+        <h2 class="section__title">O que nossos clientes dizem</h2>
+        <p class="section__subtitle">
+          Resultados reais de empresas que confiaram na Oráculo para acelerar seu crescimento digital.
+        </p>
+        <div class="testimonials__grid">
+          <div class="testimonial__card">
+            <div class="testimonial__bubble">
+              <p class="testimonial__text">
+                "A Oráculo transformou nossos resultados em tráfego pago. Em 3 meses, triplicamos nosso ROI e reduzimos
+                o CAC em 40%. A equipe é extremamente técnica e focada em performance."
+              </p>
+            </div>
+            <div class="testimonial__author">
+              <div class="testimonial__avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face"
+                  alt="João Silva"
+                />
+              </div>
+              <div class="testimonial__info">
+                <h4 class="testimonial__name">João Silva</h4>
+                <p class="testimonial__role">CEO, TechStart</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial__card">
+            <div class="testimonial__bubble">
+              <p class="testimonial__text">
+                "As automações com IA que a Oráculo implementou revolucionaram nosso atendimento. Aumentamos a conversão
+                em 60% e liberamos nossa equipe para focar em vendas estratégicas."
+              </p>
+            </div>
+            <div class="testimonial__author">
+              <div class="testimonial__avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face"
+                  alt="Maria Santos"
+                />
+              </div>
+              <div class="testimonial__info">
+                <h4 class="testimonial__name">Maria Santos</h4>
+                <p class="testimonial__role">Diretora de Marketing, InnovaLab</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial__card">
+            <div class="testimonial__bubble">
+              <p class="testimonial__text">
+                "Parceria incrível! Os criativos da Oráculo são data-driven e sempre performam acima da média. Nosso
+                ROAS melhorou 150% desde que começamos a trabalhar juntos."
+              </p>
+            </div>
+            <div class="testimonial__author">
+              <div class="testimonial__avatar">
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+                  alt="Carlos Mendes"
+                />
+              </div>
+              <div class="testimonial__info">
+                <h4 class="testimonial__name">Carlos Mendes</h4>
+                <p class="testimonial__role">Fundador, EcoCommerce</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Seção Impactante para Fechar Negócio -->
+    <section class="section" id="fechar-negocio">
+      <div class="section__container">
+        <h2 class="section__title">Pronto para Fechar Mais Negócios?</h2>
+        <p class="section__subtitle">
+          Transforme visitantes em clientes fiéis com estratégias comprovadas que geram resultados reais. Não perca mais
+          oportunidades – seu crescimento começa agora.
+        </p>
+
+        <div class="fechar-negocio-content">
+          <div class="fechar-negocio-benefits">
+            <div class="benefit-item">
+              <span class="benefit-icon">⚡</span>
+              <span>Resultados em 30 dias</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">📈</span>
+              <span>ROI até 300% maior</span>
+            </div>
+            <div class="benefit-item">
+              <span class="benefit-icon">🚀</span>
+              <span>Automações inteligentes</span>
+            </div>
+          </div>
+
+          <div class="fechar-negocio-stats">
+            <div class="stat-item">
+              <div class="stat-number">150%</div>
+              <div class="stat-label">Aumento médio em conversões</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">40%</div>
+              <div class="stat-label">Redução no CAC</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Suporte dedicado</div>
+            </div>
+          </div>
+
+          <a href="#" class="fechar-negocio-cta" id="fecharNegocioBtn">
+            <span class="cta-text">Agendar Consultoria Gratuita Agora</span>
+            <span class="cta-icon">🔥</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <script src="script.js"></script>
+  </body>
+</html>
