@@ -11,9 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Cache de elementos do DOM
   const elements = {
-    navToggle: document.querySelector(".nav-toggle"),
-    nav: document.querySelector(".header__nav"),
-    navLinks: document.querySelectorAll(".nav-link"),
     header: document.querySelector(".header"),
     rotator: document.querySelector(".logo-rotate"),
     heroBtn: document.querySelector(".hero__cta"),
@@ -23,113 +20,67 @@ document.addEventListener("DOMContentLoaded", () => {
     messages: document.querySelectorAll(".message-container"),
   };
 
-  // Header Navigation
+  // ========== Header Scroll Effect ==========
+  (function initHeaderScroll() {
+    const { header } = elements;
+    if (!header) return;
 
-  // Header Navigation
-  const { navToggle, nav, navLinks, header } = elements;
-
-  if (navToggle && nav) {
-    navToggle.addEventListener("click", () => {
-      nav.classList.toggle("active");
-      navToggle.classList.toggle("active");
-    });
-  }
-
-  if (navLinks && nav) {
-    navLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        if (nav.classList.contains("active")) {
-          nav.classList.remove("active");
-          navToggle.classList.remove("active");
-        }
-      });
-    });
-  }
-
-  if (header) {
     let ticking = false;
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            if (window.scrollY > 50) {
-              header.classList.add("scrolled");
-            } else {
-              header.classList.remove("scrolled");
-            }
-            ticking = false;
-          });
-          ticking = true;
-        }
-      },
-      { passive: true }
-    );
-  }
 
-  // Smooth scrolling for navigation links
-  navLinks.forEach((link) => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      const targetId = this.getAttribute("href");
-      const targetSection = document.querySelector(targetId);
-      if (targetSection) {
-        const headerHeight = header.offsetHeight;
-        const targetPosition = targetSection.offsetTop - headerHeight;
-        window.scrollTo({
-          top: targetPosition,
-          behavior: "smooth",
-        });
+    function updateHeader() {
+      const scrollY = window.scrollY;
+
+      // Mostrar header quando rolar mais de 100px
+      if (scrollY > 100) {
+        header.classList.add("scrolled");
+      } else {
+        header.classList.remove("scrolled");
       }
-    });
-  });
 
-  // Rotação da roda do oráculo - lenta contínua + aceleração no scroll
-  (function () {
-    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
-
-    const { rotator } = elements;
-    if (!rotator) return;
-
-    let ticking = false;
-    let startTime = Date.now();
-    const scrollFactor = 0.3;
-    const baseSpeed = 0.012;
-    let rafId;
-
-    function updateRotation() {
-      const currentTime = Date.now();
-      const elapsed = currentTime - startTime;
-      const baseAngle = (elapsed * baseSpeed) % 360;
-      const scrollAngle = window.scrollY * scrollFactor;
-      const totalAngle = baseAngle + scrollAngle;
-
-      rotator.style.transform = `rotate(${totalAngle}deg)`;
       ticking = false;
     }
 
-    function animate() {
-      updateRotation();
-      rafId = requestAnimationFrame(animate);
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(updateHeader);
+        ticking = true;
+      }
     }
 
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (!ticking) {
-          ticking = true;
-          requestAnimationFrame(updateRotation);
-        }
-      },
-      { passive: true }
-    );
+    // Event listener para scroll
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-    animate();
+    // Verificar posição inicial
+    updateHeader();
+  })();
 
-    // Cleanup on unload
-    window.addEventListener("beforeunload", () => {
-      if (rafId) cancelAnimationFrame(rafId);
+  // ========== Mobile Menu Toggle ==========
+  (function initMobileMenu() {
+    const navToggle = document.querySelector(".nav-toggle");
+    const headerNav = document.querySelector(".header__nav");
+
+    if (!navToggle || !headerNav) return;
+
+    navToggle.addEventListener("click", () => {
+      navToggle.classList.toggle("active");
+      headerNav.classList.toggle("active");
+    });
+
+    // Fechar menu ao clicar em um link
+    const navLinks = document.querySelectorAll(".nav-link");
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        navToggle.classList.remove("active");
+        headerNav.classList.remove("active");
+      });
+    });
+
+    // Fechar menu ao clicar fora
+    document.addEventListener("click", (e) => {
+      if (!navToggle.contains(e.target) && !headerNav.contains(e.target)) {
+        navToggle.classList.remove("active");
+        headerNav.classList.remove("active");
+      }
     });
   })();
 
@@ -688,5 +639,61 @@ document.addEventListener("DOMContentLoaded", () => {
     track.addEventListener("mouseleave", () => {
       track.style.animationPlayState = "running";
     });
+  })();
+
+  // ========== Função para Fazer a Roda Girar Continuamente ==========
+  (function initWheelSpin() {
+    const rotator = elements.rotator;
+    if (!rotator) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    let rotation = 0;
+    let rotationSpeed = 0.5; // Velocidade base de rotação
+    const baseSpeed = 0.5;
+    const maxSpeed = 8; // Velocidade máxima
+    const speedDecay = 0.98; // Taxa de desaceleração (volta ao normal)
+
+    // Função para girar a roda continuamente
+    function spinWheel() {
+      rotation += rotationSpeed;
+      rotator.style.transform = `rotate(${rotation}deg)`;
+
+      // Desacelerar gradualmente de volta à velocidade base
+      if (rotationSpeed > baseSpeed) {
+        rotationSpeed *= speedDecay;
+        if (rotationSpeed < baseSpeed) {
+          rotationSpeed = baseSpeed;
+        }
+      }
+
+      requestAnimationFrame(spinWheel);
+    }
+
+    // Event listener para scroll do mouse
+    let scrollTimeout;
+    window.addEventListener(
+      "wheel",
+      (e) => {
+        // Aumentar a velocidade baseado na intensidade do scroll
+        const scrollIntensity = Math.abs(e.deltaY) / 100;
+        rotationSpeed = Math.min(rotationSpeed + scrollIntensity * 2, maxSpeed);
+
+        // Limpar timeout anterior
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout);
+        }
+
+        // Resetar para velocidade base após 2 segundos sem scroll
+        scrollTimeout = setTimeout(() => {
+          rotationSpeed = baseSpeed;
+        }, 2000);
+      },
+      { passive: true }
+    );
+
+    // Iniciar a rotação automaticamente
+    spinWheel();
   })();
 });
