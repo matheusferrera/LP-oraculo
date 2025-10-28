@@ -662,7 +662,7 @@ section {
   position: relative;
   margin-top: clamp(48px, 6vw, 64px);
   overflow: hidden;
-  padding-bottom: 60px;
+  padding-bottom: 80px;
 }
 
 /* Swiper Container */
@@ -670,6 +670,7 @@ section {
   width: 100%;
   height: auto;
   padding-top: 20px;
+  padding-bottom: 24px;
   overflow: hidden;
 }
 
@@ -768,12 +769,17 @@ section {
 
 /* Swiper Pagination */
 #servicos .swiper-pagination {
-  position: relative;
-  bottom: 0;
-  margin-top: 24px;
-  display: flex;
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  width: 100% !important;
+  margin-top: 32px;
+  padding-top: 16px;
+  display: flex !important;
   justify-content: center;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 #servicos .swiper-pagination-bullet {
@@ -781,19 +787,21 @@ section {
   height: 12px;
   border-radius: 50%;
   background: rgba(10, 104, 255, 0.3);
-  opacity: 1;
+  opacity: 1 !important;
+  margin: 0 !important;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 #servicos .swiper-pagination-bullet-active {
   background: var(--primary-600);
-  transform: scale(1.2);
+  transform: scale(1.3);
+  box-shadow: 0 2px 8px rgba(10, 104, 255, 0.4);
 }
 
 #servicos .swiper-pagination-bullet:hover {
   background: var(--primary-600);
-  transform: scale(1.1);
+  transform: scale(1.15);
 }
 
 #servicos .feature__card {
@@ -962,7 +970,7 @@ section {
 
   #servicos .carousel-nav {
     gap: 12px;
-    margin-top: 24px;
+    margin-top: 32px;
   }
 
   #servicos .carousel-btn {
@@ -972,16 +980,67 @@ section {
   }
 
   #servicos .swiper-pagination {
-    margin-top: 20px;
+    margin-top: 32px !important;
+    padding-top: 24px !important;
+    gap: 14px !important;
+    min-height: 40px;
   }
 
   #servicos .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  #servicos .swiper-pagination-bullet-active {
+    transform: scale(1.4) !important;
   }
 
   #servicos .carousel-container {
+    padding-bottom: 56px;
+  }
+
+  #servicos .feature__card {
+    margin-bottom: 20px;
+  }
+
+  #servicos .servicesSwiper {
+    padding-bottom: 32px;
+  }
+}
+
+/* Ajustes específicos para telas muito pequenas (iPhone SE, etc) */
+@media (max-width: 380px) {
+  #servicos .carousel-container {
+    padding-bottom: 68px;
+  }
+
+  #servicos .servicesSwiper {
     padding-bottom: 40px;
+  }
+
+  #servicos .swiper-pagination {
+    margin-top: 36px !important;
+    padding-top: 28px !important;
+    gap: 16px !important;
+    min-height: 44px;
+  }
+
+  #servicos .swiper-pagination-bullet {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  #servicos .swiper-pagination-bullet-active {
+    transform: scale(1.5) !important;
+  }
+
+  #servicos .feature__card {
+    margin-bottom: 24px;
+    min-height: 400px;
+  }
+
+  #servicos .carousel-nav {
+    margin-top: 36px;
   }
 }
 

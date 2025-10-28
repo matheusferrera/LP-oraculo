@@ -127,8 +127,10 @@ document.addEventListener("DOMContentLoaded", () => {
       pagination: {
         el: ".swiper-pagination",
         clickable: true,
-        dynamicBullets: true,
-        dynamicMainBullets: 3,
+        dynamicBullets: false,
+        renderBullet: function (index, className) {
+          return '<span class="' + className + '"></span>';
+        },
       },
 
       // Navegação
