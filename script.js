@@ -2,11 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========== Configuração do WhatsApp ==========
   const WHATSAPP_NUMBER = "5561991214065";
   const WHATSAPP_MESSAGE = "Olá! Gostaria de agendar minha consultoria gratuita.";
-  
+
   // Função centralizada para abrir WhatsApp
   function openWhatsApp() {
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
-    window.open(url, '_blank');
+    window.open(url, "_blank");
   }
 
   // Header Navigation
