@@ -16,7 +16,6 @@
 
   /* Superfícies e Bordas (Glass/UI) */
   --surface-0: #ffffff;
-  --surface-50: #f8fbff;
   --glass-bg: rgba(255, 255, 255, 0.1);
   --glass-bg-hover: rgba(255, 255, 255, 0.16);
   --glass-border: rgba(255, 255, 255, 0.2);
@@ -53,6 +52,25 @@ body {
   background-color: var(--bg-light);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+/* Keyframes globais usadas pelo JavaScript */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(-60px) scale(0);
+    opacity: 0;
+  }
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 /* ========== Header Styles ========== */
@@ -466,17 +484,10 @@ body {
   width: 100%;
   height: 100%;
   will-change: transform;
-  animation: slowRotate 30s linear infinite;
+  contain: layout style paint;
 }
 
-@keyframes slowRotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* Animação gerenciada via JavaScript para sincronizar com scroll */
 
 @keyframes floaty {
   0%,
@@ -626,6 +637,8 @@ body {
 #servicos .carousel-wrapper {
   position: relative;
   width: 100%;
+  padding-top: 20px;
+  margin-top: 20px;
 }
 
 #servicos .features__grid {
@@ -633,6 +646,7 @@ body {
   gap: clamp(24px, 4vw, 32px);
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
+  contain: layout style;
 }
 
 /* Carousel Navigation */
@@ -837,63 +851,6 @@ body {
   font-size: 1rem;
 }
 
-/* Seção de Diferenciais */
-#servicos .services__differentials {
-  margin-top: clamp(64px, 8vw, 96px);
-  padding-top: clamp(48px, 6vw, 64px);
-  border-top: 1px solid rgba(8, 47, 107, 0.1);
-}
-
-#servicos .differentials__title {
-  font-size: clamp(1.5rem, 1.2vw + 1rem, 2rem);
-  text-align: center;
-  margin: 0 0 40px 0;
-  color: var(--primary-900);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-}
-
-#servicos .differentials__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: clamp(24px, 4vw, 32px);
-}
-
-#servicos .differential__item {
-  text-align: center;
-  padding: clamp(20px, 3vw, 28px);
-  background: var(--surface-0);
-  border-radius: 16px;
-  border: 1px solid rgba(8, 47, 107, 0.06);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-#servicos .differential__item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(8, 47, 107, 0.1);
-}
-
-#servicos .differential__icon {
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-  display: block;
-}
-
-#servicos .differential__title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin: 0 0 8px 0;
-  color: var(--primary-900);
-  letter-spacing: -0.01em;
-}
-
-#servicos .differential__desc {
-  margin: 0;
-  color: var(--text-2-light);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
 /* Carousel Responsive Styles */
 @media (max-width: 1200px) {
   #servicos .feature__card {
@@ -905,11 +862,6 @@ body {
   #servicos .feature__card {
     flex: 0 0 auto; /* 1 card per view on mobile */
     min-width: 280px;
-  }
-
-  #servicos .differentials__grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: clamp(16px, 4vw, 24px);
   }
 
   #servicos .carousel-btn {
@@ -1119,58 +1071,8 @@ body {
   transform: translateX(4px);
 }
 
-#servicos .conversion-cta-benefits {
-  display: flex;
-  justify-content: center;
-  gap: clamp(16px, 4vw, 32px);
-  flex-wrap: wrap;
-  margin-top: 24px;
-}
-
-#servicos .conversion-benefit {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-#servicos .benefit-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  font-size: 0.8rem;
-  font-weight: bold;
-  color: white;
-  flex-shrink: 0;
-}
-
-#servicos .benefit-text {
-  white-space: nowrap;
-}
-
 /* Responsividade para o botão de conversão */
 @media (max-width: 768px) {
-  #servicos .conversion-cta-benefits {
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-
-  #servicos .conversion-benefit {
-    justify-content: center;
-  }
-
-  #servicos .benefit-text {
-    white-space: normal;
-    text-align: center;
-  }
-
   #servicos .conversion-cta-button {
     padding: 14px 28px;
     font-size: 1rem;
@@ -1621,6 +1523,7 @@ body {
   flex-shrink: 0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
+  contain: layout;
 }
 
 .message-avatar:hover {
@@ -1632,6 +1535,8 @@ body {
   height: 100%;
   object-fit: cover;
   display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .oraculo-avatar-small {
@@ -1805,31 +1710,14 @@ body {
   transform: translateY(0);
 }
 
-.whatsapp-icon {
-  font-size: 18px;
-}
-
 .whatsapp-text {
   flex: 1;
   text-align: center;
 }
 
-.whatsapp-arrow {
-  font-size: 16px;
-  transition: transform 0.3s ease;
-}
-
-.whatsapp-cta:hover .whatsapp-arrow {
-  transform: translateX(4px);
-}
-
 /* Responsividade */
 
 @media (max-width: 768px) {
-  #testemunhos {
-    padding: calc(var(--pad) * 2) var(--pad);
-  }
-
   .whatsapp-container {
     max-width: 100%;
     margin: 0 16px;
@@ -1977,12 +1865,21 @@ body {
 
 .oraculos__track {
   display: flex;
-  gap: clamp(40px, 8vw, 80px);
-  animation: marqueeScroll 25s linear infinite;
+  gap: clamp(60px, 10vw, 120px);
   white-space: nowrap;
+  will-change: transform;
+  contain: layout style;
+  /* Animação será aplicada dinamicamente pelo JavaScript */
 }
 
-@keyframes marqueeScroll {
+/* Fallback caso o JavaScript não carregue */
+@media (scripting: none) {
+  .oraculos__track {
+    animation: marqueeScrollFallback 60s linear infinite;
+  }
+}
+
+@keyframes marqueeScrollFallback {
   0% {
     transform: translateX(0);
   }
@@ -2017,12 +1914,19 @@ body {
   }
 
   .oraculos__track {
-    gap: clamp(32px, 6vw, 60px);
-    animation-duration: 20s;
+    gap: clamp(48px, 8vw, 80px);
+    animation-duration: 25s;
   }
 
   .oraculo__item {
     font-size: clamp(0.9rem, 1.2vw + 0.5rem, 1.2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .oraculos__track {
+    gap: clamp(40px, 6vw, 60px);
+    animation-duration: 15s;
   }
 }
 
@@ -2261,35 +2165,6 @@ body {
   transform: translateX(6px);
 }
 
-.fechar-negocio-guarantee {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 24px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 50px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  opacity: 0.9;
-  transition: opacity 0.3s ease;
-}
-
-.fechar-negocio-guarantee:hover {
-  opacity: 1;
-}
-
-.guarantee-icon {
-  font-size: 1.2rem;
-  flex-shrink: 0;
-}
-
-.guarantee-text {
-  line-height: 1.4;
-}
-
 /* Responsividade para a seção de fechar negócio */
 @media (max-width: 768px) {
   #fechar-negocio {
@@ -2318,12 +2193,6 @@ body {
   .fechar-negocio-cta {
     padding: 16px 32px;
     font-size: 1rem;
-  }
-
-  .fechar-negocio-guarantee {
-    flex-direction: column;
-    text-align: center;
-    gap: 8px;
   }
 }
 

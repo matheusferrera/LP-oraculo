@@ -9,11 +9,28 @@ document.addEventListener("DOMContentLoaded", () => {
     window.open(url, "_blank");
   }
 
+  // Cache de elementos do DOM
+  const elements = {
+    navToggle: document.querySelector(".nav-toggle"),
+    nav: document.querySelector(".header__nav"),
+    navLinks: document.querySelectorAll(".nav-link"),
+    header: document.querySelector(".header"),
+    rotator: document.querySelector(".logo-rotate"),
+    carousel: document.getElementById("servicesCarousel"),
+    prevBtn: document.getElementById("prevBtn"),
+    nextBtn: document.getElementById("nextBtn"),
+    indicatorsContainer: document.getElementById("carouselIndicators"),
+    heroBtn: document.querySelector(".hero__cta"),
+    conversionBtn: document.getElementById("conversionBtn"),
+    fecharNegocioBtn: document.getElementById("fecharNegocioBtn"),
+    whatsappBtn: document.getElementById("whatsappCta"),
+    messages: document.querySelectorAll(".message-container"),
+  };
+
   // Header Navigation
-  const navToggle = document.querySelector(".nav-toggle");
-  const nav = document.querySelector(".header__nav");
-  const navLinks = document.querySelectorAll(".nav-link");
-  const header = document.querySelector(".header");
+
+  // Header Navigation
+  const { navToggle, nav, navLinks, header } = elements;
 
   if (navToggle && nav) {
     navToggle.addEventListener("click", () => {
@@ -34,13 +51,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (header) {
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 50) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
-    });
+    let ticking = false;
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            if (window.scrollY > 50) {
+              header.classList.add("scrolled");
+            } else {
+              header.classList.remove("scrolled");
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      },
+      { passive: true }
+    );
   }
 
   // Smooth scrolling for navigation links
@@ -65,37 +93,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
-    const rotator = document.querySelector(".logo-rotate");
+    const { rotator } = elements;
     if (!rotator) return;
 
     let ticking = false;
     let startTime = Date.now();
-    const scrollFactor = 0.3; // graus por pixel de scroll
-    const baseSpeed = 0.012; // graus por millisegundo (rotação lenta base)
+    const scrollFactor = 0.3;
+    const baseSpeed = 0.012;
+    let rafId;
 
     function updateRotation() {
       const currentTime = Date.now();
       const elapsed = currentTime - startTime;
-
-      // Rotação base lenta (contínua)
       const baseAngle = (elapsed * baseSpeed) % 360;
-
-      // Rotação adicional baseada no scroll
       const scrollAngle = window.scrollY * scrollFactor;
-
-      // Combina ambas as rotações
       const totalAngle = baseAngle + scrollAngle;
 
       rotator.style.transform = `rotate(${totalAngle}deg)`;
-      rotator.style.animation = "none"; // Remove a animação CSS para usar JS
-
       ticking = false;
     }
 
-    // Atualização contínua para manter a rotação base
     function animate() {
       updateRotation();
-      requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
     }
 
     window.addEventListener(
@@ -109,16 +129,17 @@ document.addEventListener("DOMContentLoaded", () => {
       { passive: true }
     );
 
-    // Inicia a animação contínua
     animate();
+
+    // Cleanup on unload
+    window.addEventListener("beforeunload", () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    });
   })();
 
   // ========== Carousel de Serviços ==========
   (function initServicesCarousel() {
-    const carousel = document.getElementById("servicesCarousel");
-    const prevBtn = document.getElementById("prevBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const indicatorsContainer = document.getElementById("carouselIndicators");
+    const { carousel, prevBtn, nextBtn, indicatorsContainer } = elements;
 
     if (!carousel || !prevBtn || !nextBtn || !indicatorsContainer) return;
 
@@ -126,28 +147,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const totalCards = cards.length;
 
     let currentIndex = 0;
-    let cardsPerView = 3; // Default para desktop
+    let cardsPerView = 3;
     let maxIndex = Math.max(0, totalCards - cardsPerView);
+    let resizeTimeout;
 
     // Função para calcular quantos cards mostrar baseado na largura da tela
     function updateCardsPerView() {
       const width = window.innerWidth;
       if (width <= 900) {
-        cardsPerView = 1; // Mobile: 1 card
+        cardsPerView = 1;
       } else if (width <= 1200) {
-        cardsPerView = 2; // Tablet: 2 cards
+        cardsPerView = 2;
       } else {
-        cardsPerView = 3; // Desktop: 3 cards
+        cardsPerView = 3;
       }
       maxIndex = Math.max(0, totalCards - cardsPerView);
 
-      // Ajustar currentIndex se necessário
       if (currentIndex > maxIndex) {
         currentIndex = maxIndex;
       }
 
-      // Calcular e definir flex-basis dinamicamente para cada card
-      const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24; // fallback para 24px
+      const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24;
       const containerWidth = carousel.offsetWidth;
       const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
       cards.forEach((card) => {
@@ -226,15 +246,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Suporte a touch/swipe (básico)
+    // Suporte a touch/swipe melhorado
     let startX = 0;
+    let startY = 0;
+    let currentX = 0;
     let isDragging = false;
+    let hasMoved = false;
 
     carousel.addEventListener(
       "touchstart",
       (e) => {
         startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        currentX = startX;
         isDragging = true;
+        hasMoved = false;
+        carousel.style.transition = "none";
       },
       { passive: true }
     );
@@ -243,7 +270,26 @@ document.addEventListener("DOMContentLoaded", () => {
       "touchmove",
       (e) => {
         if (!isDragging) return;
-        e.preventDefault();
+        
+        currentX = e.touches[0].clientX;
+        const currentY = e.touches[0].clientY;
+        const diffX = Math.abs(currentX - startX);
+        const diffY = Math.abs(currentY - startY);
+        
+        // Apenas previne o default se o movimento for mais horizontal que vertical
+        if (diffX > diffY && diffX > 10) {
+          hasMoved = true;
+          e.preventDefault();
+          
+          // Adiciona feedback visual durante o arrasto
+          const dragOffset = (currentX - startX) * 0.3;
+          const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24;
+          const containerWidth = carousel.offsetWidth;
+          const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
+          const baseTranslate = -(currentIndex * (cardWidth + gapValue));
+          
+          carousel.style.transform = `translateX(${baseTranslate + dragOffset}px)`;
+        }
       },
       { passive: false }
     );
@@ -254,16 +300,30 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!isDragging) return;
         isDragging = false;
 
+        // Restaura a transição suave
+        carousel.style.transition = "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+
+        if (!hasMoved) {
+          updateCarousel();
+          return;
+        }
+
         const endX = e.changedTouches[0].clientX;
         const diff = startX - endX;
         const threshold = 50; // Mínimo de pixels para considerar um swipe
+        const velocity = Math.abs(diff);
 
-        if (Math.abs(diff) > threshold) {
-          if (diff > 0) {
+        // Considera tanto a distância quanto a velocidade
+        if (velocity > threshold) {
+          if (diff > 0 && currentIndex < maxIndex) {
             nextSlide(); // Swipe left = próximo
-          } else {
+          } else if (diff < 0 && currentIndex > 0) {
             prevSlide(); // Swipe right = anterior
+          } else {
+            updateCarousel(); // Volta para a posição atual
           }
+        } else {
+          updateCarousel(); // Volta para a posição atual
         }
       },
       { passive: true }
@@ -271,37 +331,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Redimensionamento da janela
     function handleResize() {
-      updateCardsPerView();
-      createIndicators();
-      updateCarousel();
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        updateCardsPerView();
+        createIndicators();
+        updateCarousel();
+      }, 150);
     }
 
-    window.addEventListener("resize", handleResize);
-
-    // Auto-play opcional (comentado por padrão)
-    /*
-    let autoplayInterval;
-    function startAutoplay() {
-      autoplayInterval = setInterval(() => {
-        if (currentIndex === maxIndex) {
-          goToSlide(0); // Volta para o início
-        } else {
-          nextSlide();
-        }
-      }, 5000); // 5 segundos
-    }
-
-    function stopAutoplay() {
-      clearInterval(autoplayInterval);
-    }
-
-    // Pausar autoplay ao interagir
-    carousel.addEventListener('mouseenter', stopAutoplay);
-    carousel.addEventListener('mouseleave', startAutoplay);
-    
-    // Iniciar autoplay
-    startAutoplay();
-    */
+    window.addEventListener("resize", handleResize, { passive: true });
 
     // Inicialização
     updateCardsPerView();
@@ -318,6 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     magneticButtons.forEach((button) => {
       let isHovering = false;
+      let rafId;
 
       button.addEventListener("mouseenter", () => {
         isHovering = true;
@@ -325,37 +364,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
       button.addEventListener("mouseleave", () => {
         isHovering = false;
-        // Resetar posição quando sair do hover
+        if (rafId) cancelAnimationFrame(rafId);
         button.style.transform = "";
       });
 
       button.addEventListener("mousemove", (e) => {
         if (!isHovering) return;
 
-        const rect = button.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
+        if (rafId) cancelAnimationFrame(rafId);
 
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+        rafId = requestAnimationFrame(() => {
+          const rect = button.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const deltaX = e.clientX - centerX;
+          const deltaY = e.clientY - centerY;
+          const moveX = deltaX * 0.15;
+          const moveY = deltaY * 0.15;
 
-        // Calcular distância do centro
-        const deltaX = mouseX - centerX;
-        const deltaY = mouseY - centerY;
-
-        // Reduzir o efeito para ser mais sutil
-        const moveX = deltaX * 0.15;
-        const moveY = deltaY * 0.15;
-
-        // Aplicar transformação magnética
-        button.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.02)`;
+          button.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.02)`;
+        });
       });
     });
   })();
 
   // ========== Botão Hero CTA - Abrir WhatsApp ==========
   (function initHeroCTA() {
-    const heroBtn = document.querySelector(".hero__cta");
+    const { heroBtn } = elements;
     if (!heroBtn) return;
 
     heroBtn.addEventListener("click", function (event) {
@@ -363,7 +398,6 @@ document.addEventListener("DOMContentLoaded", () => {
       openWhatsApp();
     });
 
-    // Suporte para navegação por teclado
     heroBtn.addEventListener("keydown", function (event) {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
@@ -371,21 +405,20 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Adicionar atributos de acessibilidade
     heroBtn.setAttribute("role", "button");
     heroBtn.setAttribute("aria-label", "Agendar consultoria gratuita via WhatsApp");
   })();
 
   // ========== Efeito de Partículas no Botão Hero ==========
   (function initHeroParticles() {
-    const heroButton = document.querySelector(".hero__cta");
+    const { heroBtn: heroButton } = elements;
     if (!heroButton) return;
 
-    // Verificar se motion reduzida está habilitada
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) return;
 
     let isHovering = false;
+    let particleInterval;
 
     function createFloatingDot() {
       if (!isHovering) return;
@@ -404,29 +437,9 @@ document.addEventListener("DOMContentLoaded", () => {
         z-index: -1;
       `;
 
-      // Adicionar keyframes se não existir
-      if (!document.querySelector("#float-keyframes")) {
-        const style = document.createElement("style");
-        style.id = "float-keyframes";
-        style.textContent = `
-          @keyframes floatUp {
-            0% {
-              transform: translateY(0) scale(1);
-              opacity: 0.7;
-            }
-            100% {
-              transform: translateY(-60px) scale(0);
-              opacity: 0;
-            }
-          }
-        `;
-        document.head.appendChild(style);
-      }
-
       heroButton.style.position = "relative";
       heroButton.appendChild(dot);
 
-      // Remover após animação
       setTimeout(() => {
         if (dot.parentNode) {
           dot.parentNode.removeChild(dot);
@@ -436,25 +449,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     heroButton.addEventListener("mouseenter", () => {
       isHovering = true;
-      // Criar partículas em intervalos
-      const particleInterval = setInterval(() => {
-        if (!isHovering) {
-          clearInterval(particleInterval);
-          return;
-        }
-        createFloatingDot();
-      }, 200);
+      particleInterval = setInterval(createFloatingDot, 200);
     });
 
     heroButton.addEventListener("mouseleave", () => {
       isHovering = false;
+      if (particleInterval) clearInterval(particleInterval);
     });
   })();
 
   // ========== Botão de Conversão ==========
   (function initConversionButton() {
-    const conversionBtn = document.getElementById("conversionBtn");
-
+    const { conversionBtn } = elements;
     if (!conversionBtn) return;
 
     // Adicionar efeito de ripple ao clicar
@@ -479,21 +485,6 @@ document.addEventListener("DOMContentLoaded", () => {
         pointer-events: none;
         z-index: 0;
       `;
-
-      // Adicionar keyframes para a animação do ripple se não existir
-      if (!document.querySelector("#ripple-keyframes")) {
-        const style = document.createElement("style");
-        style.id = "ripple-keyframes";
-        style.textContent = `
-          @keyframes ripple-animation {
-            to {
-              transform: scale(2);
-              opacity: 0;
-            }
-          }
-        `;
-        document.head.appendChild(style);
-      }
 
       button.appendChild(ripple);
 
@@ -542,8 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ========== Botão de Fechar Negócio ==========
   (function initFecharNegocioButton() {
-    const fecharNegocioBtn = document.getElementById("fecharNegocioBtn");
-
+    const { fecharNegocioBtn } = elements;
     if (!fecharNegocioBtn) return;
 
     // Adicionar efeito de ripple ao clicar
@@ -616,8 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ========== Botão do WhatsApp ==========
   (function initWhatsAppButton() {
-    const whatsappBtn = document.getElementById("whatsappCta");
-
+    const { whatsappBtn } = elements;
     if (!whatsappBtn) return;
 
     // Adicionar efeito de ripple ao clicar
@@ -679,82 +668,13 @@ document.addEventListener("DOMContentLoaded", () => {
     whatsappBtn.setAttribute("aria-label", "Iniciar conversa no WhatsApp para consultoria gratuita");
   })();
 
-  // ========== Acelerar Marquee dos Oráculos no Scroll ==========
-  (function initScrollAcceleratedMarquee() {
-    const marqueeTrack = document.querySelector(".oraculos__track");
-    if (!marqueeTrack) return;
-
-    // Verificar se motion reduzida está habilitada
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
-
-    let lastScrollY = window.scrollY;
-    let scrollVelocity = 0;
-    let currentPosition = 0;
-    let lastTime = Date.now();
-
-    // Configurações
-    const baseSpeed = 30; // pixels por segundo (velocidade base)
-    const scrollMultiplier = 3; // multiplicador para scroll
-    const maxScrollEffect = 100; // máximo efeito do scroll
-
-    // Desabilitar animação CSS original
-    marqueeTrack.style.animation = "none";
-
-    function animate() {
-      const now = Date.now();
-      const deltaTime = (now - lastTime) / 1000; // converter para segundos
-      lastTime = now;
-
-      // Calcular velocidade atual (base + efeito do scroll)
-      const scrollEffect = Math.min(scrollVelocity * scrollMultiplier, maxScrollEffect);
-      const currentSpeed = baseSpeed + scrollEffect;
-
-      // Mover marquee
-      currentPosition -= currentSpeed * deltaTime;
-
-      // Reset para loop infinito - usar largura fixa aproximada
-      if (currentPosition <= -4000) {
-        // valor aproximado para resetar
-        currentPosition = 0;
-      }
-
-      // Aplicar transformação
-      marqueeTrack.style.transform = `translateX(${currentPosition}px)`;
-
-      // Diminuir velocidade do scroll gradualmente
-      scrollVelocity *= 0.95;
-      if (scrollVelocity < 0.1) scrollVelocity = 0;
-
-      requestAnimationFrame(animate);
-    }
-
-    function onScroll() {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
-
-      // Acumular velocidade do scroll
-      scrollVelocity = Math.min(scrollVelocity + scrollDelta, maxScrollEffect);
-
-      lastScrollY = currentScrollY;
-    }
-
-    // Event listener para scroll
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    // Iniciar animação
-    animate();
-  })();
-
   // ========== Animação dos Balões de WhatsApp ao Entrar na Viewport ==========
   (function initWhatsAppMessagesAnimation() {
-    const messages = document.querySelectorAll(".message-container");
+    const { messages } = elements;
     if (!messages.length) return;
 
-    // Verificar se motion reduzida está habilitada
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
-      // Se motion reduzida está habilitada, mostrar todas as mensagens imediatamente
       messages.forEach((message) => {
         message.style.opacity = "1";
         message.style.transform = "translateY(0)";
@@ -762,27 +682,83 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Configurar Intersection Observer
     const observerOptions = {
       root: null,
       rootMargin: "0px",
-      threshold: 0.7, // Ativar quando 70% do elemento estiver visível
+      threshold: 0.9,
     };
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          // Adicionar classe para ativar a animação
           entry.target.classList.add("animate-in");
-          // Parar de observar após a animação ser ativada
           observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
 
-    // Observar cada mensagem
     messages.forEach((message) => {
       observer.observe(message);
+    });
+  })();
+
+  // ========== Marquee de Oráculos - Loop Infinito ==========
+  (function initOraculosMarquee() {
+    const track = document.getElementById("oraculosTrack");
+    if (!track) return;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    // Pegar todos os itens originais
+    const items = Array.from(track.querySelectorAll(".oraculo__item"));
+
+    // Duplicar os itens 3 vezes para garantir um loop suave
+    for (let i = 0; i < 3; i++) {
+      items.forEach((item) => {
+        const clone = item.cloneNode(true);
+        track.appendChild(clone);
+      });
+    }
+
+    // Calcular a largura total do conteúdo original
+    let totalWidth = 0;
+    items.forEach((item) => {
+      totalWidth += item.offsetWidth;
+    });
+
+    // Adicionar o gap entre os itens
+    const gap = parseFloat(getComputedStyle(track).gap) || 80;
+    totalWidth += gap * (items.length - 1);
+
+    // Calcular a duração da animação baseada na largura
+    // Quanto maior o conteúdo, mais tempo para manter a velocidade consistente
+    const duration = Math.max(30, totalWidth / 50); // pixels por segundo ajustável
+
+    // Aplicar a animação CSS personalizada
+    track.style.animation = `marqueeScroll ${duration}s linear infinite`;
+
+    // Criar a keyframe dinamicamente
+    const styleSheet = document.createElement("style");
+    styleSheet.textContent = `
+      @keyframes marqueeScroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-${totalWidth + gap}px);
+        }
+      }
+    `;
+    document.head.appendChild(styleSheet);
+
+    // Pausar animação ao passar o mouse (opcional)
+    track.addEventListener("mouseenter", () => {
+      track.style.animationPlayState = "paused";
+    });
+
+    track.addEventListener("mouseleave", () => {
+      track.style.animationPlayState = "running";
     });
   })();
 });

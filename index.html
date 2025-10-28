@@ -3,14 +3,32 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Oraculo</title>
-    <!-- Adicionado favicon -->
+    <title>Oráculo Tecnologia - Triplique suas Vendas em 90 Dias</title>
+    <meta
+      name="description"
+      content="Estratégias comprovadas de tráfego pago e IA para gerar 300% mais ROI. Agende sua consultoria gratuita agora."
+    />
+    <!-- Favicon -->
     <link rel="icon" href="fav.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="fav.ico" type="image/x-icon" />
+    <!-- Preload critical CSS -->
+    <link rel="preload" href="style.css" as="style" />
     <link rel="stylesheet" href="style.css" />
+    <!-- Preconnect para fontes (performance) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+    <!-- Font com display=swap para evitar FOIT -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript
+      ><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet"
+    /></noscript>
+    <!-- Preconnect para imagens externas -->
+    <link rel="preconnect" href="https://images.unsplash.com" />
   </head>
   <body>
     <header class="header">
@@ -250,22 +268,8 @@
       <div class="oraculos__container">
         <div class="oraculos__content">
           <div class="oraculos__marquee">
-            <div class="oraculos__track">
-              <span class="oraculo__item"
-                >🔮 "O futuro pertence àqueles que veem possibilidades antes que se tornem óbvias"</span
-              >
-              <span class="oraculo__item">⚡ "Dados sem ação são apenas números. Ação sem dados é apenas sorte"</span>
-              <span class="oraculo__item">🚀 "A inovação distingue um líder de um seguidor"</span>
-              <span class="oraculo__item"
-                >🎯 "Estratégia sem execução é alucinação. Execução sem estratégia é caos"</span
-              >
-              <span class="oraculo__item">💡 "O sucesso digital não é sobre tecnologia, é sobre transformação"</span>
-              <span class="oraculo__item"
-                >📊 "Meça o que importa, otimize o que funciona, elimine o que não agrega"</span
-              >
-              <span class="oraculo__item">🤖 "A IA não substitui a criatividade humana, ela a amplifica"</span>
-              <span class="oraculo__item">🎨 "Criatividade orientada por dados é a nova vantagem competitiva"</span>
-              <!-- Duplicação para loop infinito -->
+            <div class="oraculos__track" id="oraculosTrack">
+              <!-- As frases serão duplicadas dinamicamente pelo JavaScript -->
               <span class="oraculo__item"
                 >🔮 "O futuro pertence àqueles que veem possibilidades antes que se tornem óbvias"</span
               >
@@ -315,6 +319,9 @@
                 <img
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face"
                   alt="João Silva"
+                  loading="lazy"
+                  width="60"
+                  height="60"
                 />
               </div>
               <div class="message-content">
@@ -338,6 +345,9 @@
                 <img
                   src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=60&h=60&fit=crop&crop=face"
                   alt="Maria Santos"
+                  loading="lazy"
+                  width="60"
+                  height="60"
                 />
               </div>
               <div class="message-content">
@@ -362,6 +372,9 @@
                 <img
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face"
                   alt="Carlos Mendes"
+                  loading="lazy"
+                  width="60"
+                  height="60"
                 />
               </div>
               <div class="message-content">
@@ -385,6 +398,9 @@
                 <img
                   src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&h=60&fit=crop&crop=face"
                   alt="Ana Rodrigues"
+                  loading="lazy"
+                  width="60"
+                  height="60"
                 />
               </div>
               <div class="message-content">
@@ -408,6 +424,9 @@
                 <img
                   src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&h=60&fit=crop&crop=face"
                   alt="Pedro Costa"
+                  loading="lazy"
+                  width="60"
+                  height="60"
                 />
               </div>
               <div class="message-content">
@@ -485,6 +504,6 @@
       </div>
     </section>
 
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
   </body>
 </html>
