@@ -50,23 +50,42 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Rotação da roda do oráculo no scroll
+  // Rotação da roda do oráculo - lenta contínua + aceleração no scroll
   (function () {
-    const prefersReduced =
-      window.matchMedia &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReduced) return;
 
     const rotator = document.querySelector(".logo-rotate");
     if (!rotator) return;
 
     let ticking = false;
-    const factor = 0.3; // graus por pixel de scroll
+    let startTime = Date.now();
+    const scrollFactor = 0.3; // graus por pixel de scroll
+    const baseSpeed = 0.012; // graus por millisegundo (rotação lenta base)
 
     function updateRotation() {
-      const angle = window.scrollY * factor;
-      rotator.style.transform = `rotate(${angle}deg)`;
+      const currentTime = Date.now();
+      const elapsed = currentTime - startTime;
+
+      // Rotação base lenta (contínua)
+      const baseAngle = (elapsed * baseSpeed) % 360;
+
+      // Rotação adicional baseada no scroll
+      const scrollAngle = window.scrollY * scrollFactor;
+
+      // Combina ambas as rotações
+      const totalAngle = baseAngle + scrollAngle;
+
+      rotator.style.transform = `rotate(${totalAngle}deg)`;
+      rotator.style.animation = "none"; // Remove a animação CSS para usar JS
+
       ticking = false;
+    }
+
+    // Atualização contínua para manter a rotação base
+    function animate() {
+      updateRotation();
+      requestAnimationFrame(animate);
     }
 
     window.addEventListener(
@@ -80,7 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
       { passive: true }
     );
 
-    updateRotation();
+    // Inicia a animação contínua
+    animate();
   })();
 
   // ========== Carousel de Serviços ==========
@@ -119,8 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Calcular e definir flex-basis dinamicamente para cada card
       const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24; // fallback para 24px
       const containerWidth = carousel.offsetWidth;
-      const cardWidth =
-        (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
+      const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
       cards.forEach((card) => {
         card.style.flexBasis = cardWidth + "px";
       });
@@ -144,16 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateCarousel() {
       const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24;
       const containerWidth = carousel.offsetWidth;
-      const cardWidth =
-        (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
+      const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
       const translateX = -(currentIndex * (cardWidth + gapValue));
 
       carousel.style.transform = `translateX(${translateX}px)`;
 
       // Atualizar indicadores
-      const indicators = indicatorsContainer.querySelectorAll(
-        ".carousel-indicator"
-      );
+      const indicators = indicatorsContainer.querySelectorAll(".carousel-indicator");
       indicators.forEach((indicator, index) => {
         indicator.classList.toggle("active", index === currentIndex);
       });
@@ -284,6 +300,122 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Tornar o carousel focável para navegação por teclado
     carousel.setAttribute("tabindex", "0");
+  })();
+
+  // ========== Efeito de Magnetismo para Botões ==========
+  (function initMagneticButtons() {
+    const magneticButtons = document.querySelectorAll(".hero__cta, .conversion-cta-button");
+
+    magneticButtons.forEach((button) => {
+      let isHovering = false;
+
+      button.addEventListener("mouseenter", () => {
+        isHovering = true;
+      });
+
+      button.addEventListener("mouseleave", () => {
+        isHovering = false;
+        // Resetar posição quando sair do hover
+        button.style.transform = "";
+      });
+
+      button.addEventListener("mousemove", (e) => {
+        if (!isHovering) return;
+
+        const rect = button.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        // Calcular distância do centro
+        const deltaX = mouseX - centerX;
+        const deltaY = mouseY - centerY;
+
+        // Reduzir o efeito para ser mais sutil
+        const moveX = deltaX * 0.15;
+        const moveY = deltaY * 0.15;
+
+        // Aplicar transformação magnética
+        button.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.02)`;
+      });
+    });
+  })();
+
+  // ========== Efeito de Partículas no Botão Hero ==========
+  (function initHeroParticles() {
+    const heroButton = document.querySelector(".hero__cta");
+    if (!heroButton) return;
+
+    // Verificar se motion reduzida está habilitada
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    let isHovering = false;
+
+    function createFloatingDot() {
+      if (!isHovering) return;
+
+      const dot = document.createElement("div");
+      dot.style.cssText = `
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        pointer-events: none;
+        left: ${Math.random() * 100}%;
+        bottom: 0;
+        animation: floatUp 2s linear forwards;
+        z-index: -1;
+      `;
+
+      // Adicionar keyframes se não existir
+      if (!document.querySelector("#float-keyframes")) {
+        const style = document.createElement("style");
+        style.id = "float-keyframes";
+        style.textContent = `
+          @keyframes floatUp {
+            0% {
+              transform: translateY(0) scale(1);
+              opacity: 0.7;
+            }
+            100% {
+              transform: translateY(-60px) scale(0);
+              opacity: 0;
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      heroButton.style.position = "relative";
+      heroButton.appendChild(dot);
+
+      // Remover após animação
+      setTimeout(() => {
+        if (dot.parentNode) {
+          dot.parentNode.removeChild(dot);
+        }
+      }, 2000);
+    }
+
+    heroButton.addEventListener("mouseenter", () => {
+      isHovering = true;
+      // Criar partículas em intervalos
+      const particleInterval = setInterval(() => {
+        if (!isHovering) {
+          clearInterval(particleInterval);
+          return;
+        }
+        createFloatingDot();
+      }, 200);
+    });
+
+    heroButton.addEventListener("mouseleave", () => {
+      isHovering = false;
+    });
   })();
 
   // ========== Botão de Conversão ==========
@@ -522,9 +654,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 5000);
     }
 
-    // Adicionar efeito de hover melhorado
+    // Adicionar efeito de hover simples
     fecharNegocioBtn.addEventListener("mouseenter", function () {
-      this.style.transform = "translateY(-4px) scale(1.05)";
+      this.style.transform = "translateY(-2px) scale(1.01)";
     });
 
     fecharNegocioBtn.addEventListener("mouseleave", function () {
@@ -541,9 +673,228 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Adicionar atributos de acessibilidade
     fecharNegocioBtn.setAttribute("role", "button");
-    fecharNegocioBtn.setAttribute(
-      "aria-label",
-      "Agendar consultoria gratuita para fechar mais negócios"
-    );
+    fecharNegocioBtn.setAttribute("aria-label", "Agendar consultoria gratuita para fechar mais negócios");
+  })();
+
+  // ========== Botão do WhatsApp ==========
+  (function initWhatsAppButton() {
+    const whatsappBtn = document.getElementById("whatsappCta");
+
+    if (!whatsappBtn) return;
+
+    // Adicionar efeito de ripple ao clicar
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const rect = button.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const x = event.clientX - rect.left - size / 2;
+      const y = event.clientY - rect.top - size / 2;
+
+      const ripple = document.createElement("span");
+      ripple.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        left: ${x}px;
+        top: ${y}px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple-animation 0.6s ease-out;
+        pointer-events: none;
+        z-index: 0;
+      `;
+
+      button.appendChild(ripple);
+
+      // Remover o ripple após a animação
+      setTimeout(() => {
+        if (ripple.parentNode) {
+          ripple.parentNode.removeChild(ripple);
+        }
+      }, 600);
+    }
+
+    // Event listener para o clique
+    whatsappBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      // Criar efeito ripple
+      createRipple(event);
+
+      // Simular ação de conversão do WhatsApp
+      console.log("Botão do WhatsApp clicado!");
+
+      // Feedback de sucesso específico do WhatsApp
+      setTimeout(() => {
+        showWhatsAppSuccess();
+      }, 300);
+    });
+
+    // Função para mostrar feedback de sucesso do WhatsApp
+    function showWhatsAppSuccess() {
+      const feedback = document.createElement("div");
+      feedback.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #25d366, #128c7e);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(37, 211, 102, 0.3);
+        z-index: 10000;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+      `;
+      feedback.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>💬</span>
+          <span>Redirecionando para o WhatsApp...</span>
+        </div>
+      `;
+
+      document.body.appendChild(feedback);
+
+      // Animar entrada
+      setTimeout(() => {
+        feedback.style.transform = "translateX(0)";
+      }, 100);
+
+      // Simular redirecionamento para WhatsApp
+      setTimeout(() => {
+        // Aqui você pode adicionar o link real do WhatsApp
+        // window.open('https://wa.me/5511999999999?text=Olá! Gostaria de agendar uma consultoria gratuita.', '_blank');
+
+        // Remover feedback
+        feedback.style.transform = "translateX(100%)";
+        setTimeout(() => {
+          if (feedback.parentNode) {
+            feedback.parentNode.removeChild(feedback);
+          }
+        }, 300);
+      }, 2000);
+    }
+
+    // Suporte para navegação por teclado
+    whatsappBtn.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        this.click();
+      }
+    });
+
+    // Adicionar atributos de acessibilidade
+    whatsappBtn.setAttribute("role", "button");
+    whatsappBtn.setAttribute("aria-label", "Iniciar conversa no WhatsApp para consultoria gratuita");
+  })();
+
+  // ========== Acelerar Marquee dos Oráculos no Scroll ==========
+  (function initScrollAcceleratedMarquee() {
+    const marqueeTrack = document.querySelector(".oraculos__track");
+    if (!marqueeTrack) return;
+
+    // Verificar se motion reduzida está habilitada
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    let lastScrollY = window.scrollY;
+    let scrollVelocity = 0;
+    let currentPosition = 0;
+    let lastTime = Date.now();
+
+    // Configurações
+    const baseSpeed = 30; // pixels por segundo (velocidade base)
+    const scrollMultiplier = 3; // multiplicador para scroll
+    const maxScrollEffect = 100; // máximo efeito do scroll
+
+    // Desabilitar animação CSS original
+    marqueeTrack.style.animation = "none";
+
+    function animate() {
+      const now = Date.now();
+      const deltaTime = (now - lastTime) / 1000; // converter para segundos
+      lastTime = now;
+
+      // Calcular velocidade atual (base + efeito do scroll)
+      const scrollEffect = Math.min(scrollVelocity * scrollMultiplier, maxScrollEffect);
+      const currentSpeed = baseSpeed + scrollEffect;
+
+      // Mover marquee
+      currentPosition -= currentSpeed * deltaTime;
+
+      // Reset para loop infinito - usar largura fixa aproximada
+      if (currentPosition <= -4000) {
+        // valor aproximado para resetar
+        currentPosition = 0;
+      }
+
+      // Aplicar transformação
+      marqueeTrack.style.transform = `translateX(${currentPosition}px)`;
+
+      // Diminuir velocidade do scroll gradualmente
+      scrollVelocity *= 0.95;
+      if (scrollVelocity < 0.1) scrollVelocity = 0;
+
+      requestAnimationFrame(animate);
+    }
+
+    function onScroll() {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+
+      // Acumular velocidade do scroll
+      scrollVelocity = Math.min(scrollVelocity + scrollDelta, maxScrollEffect);
+
+      lastScrollY = currentScrollY;
+    }
+
+    // Event listener para scroll
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // Iniciar animação
+    animate();
+  })();
+
+  // ========== Animação dos Balões de WhatsApp ao Entrar na Viewport ==========
+  (function initWhatsAppMessagesAnimation() {
+    const messages = document.querySelectorAll(".message-container");
+    if (!messages.length) return;
+
+    // Verificar se motion reduzida está habilitada
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      // Se motion reduzida está habilitada, mostrar todas as mensagens imediatamente
+      messages.forEach((message) => {
+        message.style.opacity = "1";
+        message.style.transform = "translateY(0)";
+      });
+      return;
+    }
+
+    // Configurar Intersection Observer
+    const observerOptions = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.7, // Ativar quando 70% do elemento estiver visível
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Adicionar classe para ativar a animação
+          entry.target.classList.add("animate-in");
+          // Parar de observar após a animação ser ativada
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Observar cada mensagem
+    messages.forEach((message) => {
+      observer.observe(message);
+    });
   })();
 });
