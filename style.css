@@ -571,6 +571,8 @@ section {
 
   .hero__left .hero__cta {
     grid-area: button;
+    margin-top: 2rem;
+    margin-bottom: 4rem;
   }
 
   .hero__right {
@@ -934,7 +936,7 @@ section {
     height: 44px;
     font-size: 1.1rem;
   }
-  
+
   #servicos .carousel-nav {
     gap: 16px;
   }
@@ -972,7 +974,7 @@ section {
     width: 10px;
     height: 10px;
   }
-  
+
   #servicos .carousel-container {
     padding-bottom: 40px;
   }

@@ -136,18 +136,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // ========== Swiper Carousel de Serviços ==========
   (function initServicesSwiper() {
     // Verificar se o Swiper está disponível
-    if (typeof Swiper === 'undefined') {
-      console.error('Swiper não está carregado');
+    if (typeof Swiper === "undefined") {
+      console.error("Swiper não está carregado");
       return;
     }
 
-    const servicesSwiper = new Swiper('.servicesSwiper', {
+    const servicesSwiper = new Swiper(".servicesSwiper", {
       // Configurações básicas
       slidesPerView: 1,
       spaceBetween: 24,
       centeredSlides: false,
       grabCursor: true,
-      
+
       // Breakpoints responsivos
       breakpoints: {
         // Mobile pequeno
@@ -169,12 +169,12 @@ document.addEventListener("DOMContentLoaded", () => {
         1200: {
           slidesPerView: 3,
           spaceBetween: 32,
-        }
+        },
       },
 
       // Paginação
       pagination: {
-        el: '.swiper-pagination',
+        el: ".swiper-pagination",
         clickable: true,
         dynamicBullets: true,
         dynamicMainBullets: 3,
@@ -182,8 +182,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Navegação
       navigation: {
-        nextEl: '.swiper-button-next',
-        prevEl: '.swiper-button-prev',
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
       },
 
       // Suporte a teclado
@@ -200,12 +200,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Efeitos e transições suaves
       speed: 600,
-      effect: 'slide',
-      
+      effect: "slide",
+
       // Otimizações para performance
       watchSlidesProgress: true,
       watchSlidesVisibility: true,
-      
+
       // Lazy loading (se necessário)
       preloadImages: false,
       lazy: {
@@ -221,51 +221,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Acessibilidade
       a11y: {
-        prevSlideMessage: 'Slide anterior',
-        nextSlideMessage: 'Próximo slide',
-        firstSlideMessage: 'Este é o primeiro slide',
-        lastSlideMessage: 'Este é o último slide',
+        prevSlideMessage: "Slide anterior",
+        nextSlideMessage: "Próximo slide",
+        firstSlideMessage: "Este é o primeiro slide",
+        lastSlideMessage: "Este é o último slide",
       },
 
       // Callback quando o swiper é inicializado
       on: {
         init: function () {
-          console.log('Swiper inicializado com sucesso!');
+          console.log("Swiper inicializado com sucesso!");
         },
         slideChange: function () {
           // Adicionar animação suave aos cards ao mudar
           const activeSlide = this.slides[this.activeIndex];
           if (activeSlide) {
-            activeSlide.classList.add('swiper-slide-active-custom');
+            activeSlide.classList.add("swiper-slide-active-custom");
           }
         },
       },
     });
 
     // Adicionar suporte a gestos de toque melhorados para mobile
-    if ('ontouchstart' in window) {
-      const swiperEl = document.querySelector('.servicesSwiper');
+    if ("ontouchstart" in window) {
+      const swiperEl = document.querySelector(".servicesSwiper");
       if (swiperEl) {
         // Prevenir scroll vertical enquanto desliza horizontalmente
         let touchStartY = 0;
         let touchStartX = 0;
 
-        swiperEl.addEventListener('touchstart', (e) => {
-          touchStartY = e.touches[0].clientY;
-          touchStartX = e.touches[0].clientX;
-        }, { passive: true });
+        swiperEl.addEventListener(
+          "touchstart",
+          (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchStartX = e.touches[0].clientX;
+          },
+          { passive: true }
+        );
 
-        swiperEl.addEventListener('touchmove', (e) => {
-          const touchMoveY = e.touches[0].clientY;
-          const touchMoveX = e.touches[0].clientX;
-          const diffY = Math.abs(touchMoveY - touchStartY);
-          const diffX = Math.abs(touchMoveX - touchStartX);
+        swiperEl.addEventListener(
+          "touchmove",
+          (e) => {
+            const touchMoveY = e.touches[0].clientY;
+            const touchMoveX = e.touches[0].clientX;
+            const diffY = Math.abs(touchMoveY - touchStartY);
+            const diffX = Math.abs(touchMoveX - touchStartX);
 
-          // Se o movimento horizontal é maior que o vertical, prevenir scroll
-          if (diffX > diffY) {
-            e.stopPropagation();
-          }
-        }, { passive: false });
+            // Se o movimento horizontal é maior que o vertical, prevenir scroll
+            if (diffX > diffY) {
+              e.stopPropagation();
+            }
+          },
+          { passive: false }
+        );
       }
     }
   })();
