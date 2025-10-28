@@ -1,4 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // ========== Configuração do WhatsApp ==========
+  const WHATSAPP_NUMBER = "5561991214065";
+  const WHATSAPP_MESSAGE = "Olá! Gostaria de agendar minha consultoria gratuita.";
+  
+  // Função centralizada para abrir WhatsApp
+  function openWhatsApp() {
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
+    window.open(url, '_blank');
+  }
+
   // Header Navigation
   const navToggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector(".header__nav");
@@ -343,6 +353,29 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   })();
 
+  // ========== Botão Hero CTA - Abrir WhatsApp ==========
+  (function initHeroCTA() {
+    const heroBtn = document.querySelector(".hero__cta");
+    if (!heroBtn) return;
+
+    heroBtn.addEventListener("click", function (event) {
+      event.preventDefault();
+      openWhatsApp();
+    });
+
+    // Suporte para navegação por teclado
+    heroBtn.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        this.click();
+      }
+    });
+
+    // Adicionar atributos de acessibilidade
+    heroBtn.setAttribute("role", "button");
+    heroBtn.setAttribute("aria-label", "Agendar consultoria gratuita via WhatsApp");
+  })();
+
   // ========== Efeito de Partículas no Botão Hero ==========
   (function initHeroParticles() {
     const heroButton = document.querySelector(".hero__cta");
@@ -479,60 +512,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Criar efeito ripple
       createRipple(event);
 
-      // Simular ação de conversão (aqui você pode adicionar sua lógica)
-      console.log("Botão de conversão clicado!");
-
-      // Exemplo de ação: scroll suave para o topo ou abrir modal
-      // Você pode substituir por sua lógica específica
+      // Abrir WhatsApp após o efeito
       setTimeout(() => {
-        // Exemplo: mostrar alerta de sucesso
-        showConversionSuccess();
+        openWhatsApp();
       }, 300);
     });
-
-    // Função para mostrar feedback de sucesso
-    function showConversionSuccess() {
-      // Criar elemento de feedback temporário
-      const feedback = document.createElement("div");
-      feedback.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(16, 185, 129, 0.3);
-        z-index: 10000;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-      `;
-      feedback.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>✓</span>
-          <span>Solicitação enviada! Entraremos em contato em breve.</span>
-        </div>
-      `;
-
-      document.body.appendChild(feedback);
-
-      // Animar entrada
-      setTimeout(() => {
-        feedback.style.transform = "translateX(0)";
-      }, 100);
-
-      // Remover após 4 segundos
-      setTimeout(() => {
-        feedback.style.transform = "translateX(100%)";
-        setTimeout(() => {
-          if (feedback.parentNode) {
-            feedback.parentNode.removeChild(feedback);
-          }
-        }, 300);
-      }, 4000);
-    }
 
     // Adicionar efeito de hover melhorado
     conversionBtn.addEventListener("mouseenter", function () {
@@ -602,57 +586,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Criar efeito ripple
       createRipple(event);
 
-      // Simular ação de conversão
-      console.log("Botão de fechar negócio clicado!");
-
-      // Feedback de sucesso
+      // Abrir WhatsApp após o efeito
       setTimeout(() => {
-        showFecharNegocioSuccess();
+        openWhatsApp();
       }, 400);
     });
-
-    // Função para mostrar feedback de sucesso
-    function showFecharNegocioSuccess() {
-      const feedback = document.createElement("div");
-      feedback.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3);
-        z-index: 10000;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-      `;
-      feedback.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>🔥</span>
-          <span>Excelente! Sua jornada para o sucesso começa agora!</span>
-        </div>
-      `;
-
-      document.body.appendChild(feedback);
-
-      // Animar entrada
-      setTimeout(() => {
-        feedback.style.transform = "translateX(0)";
-      }, 100);
-
-      // Remover após 5 segundos
-      setTimeout(() => {
-        feedback.style.transform = "translateX(100%)";
-        setTimeout(() => {
-          if (feedback.parentNode) {
-            feedback.parentNode.removeChild(feedback);
-          }
-        }, 300);
-      }, 5000);
-    }
 
     // Adicionar efeito de hover simples
     fecharNegocioBtn.addEventListener("mouseenter", function () {
@@ -722,61 +660,11 @@ document.addEventListener("DOMContentLoaded", () => {
       // Criar efeito ripple
       createRipple(event);
 
-      // Simular ação de conversão do WhatsApp
-      console.log("Botão do WhatsApp clicado!");
-
-      // Feedback de sucesso específico do WhatsApp
+      // Abrir WhatsApp após o efeito
       setTimeout(() => {
-        showWhatsAppSuccess();
+        openWhatsApp();
       }, 300);
     });
-
-    // Função para mostrar feedback de sucesso do WhatsApp
-    function showWhatsAppSuccess() {
-      const feedback = document.createElement("div");
-      feedback.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #25d366, #128c7e);
-        color: white;
-        padding: 16px 24px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(37, 211, 102, 0.3);
-        z-index: 10000;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transform: translateX(100%);
-        transition: transform 0.3s ease;
-      `;
-      feedback.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span>💬</span>
-          <span>Redirecionando para o WhatsApp...</span>
-        </div>
-      `;
-
-      document.body.appendChild(feedback);
-
-      // Animar entrada
-      setTimeout(() => {
-        feedback.style.transform = "translateX(0)";
-      }, 100);
-
-      // Simular redirecionamento para WhatsApp
-      setTimeout(() => {
-        // Aqui você pode adicionar o link real do WhatsApp
-        // window.open('https://wa.me/5511999999999?text=Olá! Gostaria de agendar uma consultoria gratuita.', '_blank');
-
-        // Remover feedback
-        feedback.style.transform = "translateX(100%)";
-        setTimeout(() => {
-          if (feedback.parentNode) {
-            feedback.parentNode.removeChild(feedback);
-          }
-        }, 300);
-      }, 2000);
-    }
 
     // Suporte para navegação por teclado
     whatsappBtn.addEventListener("keydown", function (event) {
