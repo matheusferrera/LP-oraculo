@@ -29,6 +29,8 @@
     /></noscript>
     <!-- Preconnect para imagens externas -->
     <link rel="preconnect" href="https://images.unsplash.com" />
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   </head>
   <body>
     <header class="header">
@@ -115,9 +117,10 @@
 
         <!-- Carousel de Serviços -->
         <div class="carousel-container">
-          <div class="carousel-wrapper">
-            <div class="features__grid" id="servicesCarousel">
-              <div class="feature__card feature__card--highlight">
+          <div class="swiper servicesSwiper">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <div class="feature__card feature__card--highlight">
                 <div class="feature__badge">Mais Popular</div>
                 <div class="feature__header">
                   <div class="feature__icon">🚀</div>
@@ -132,9 +135,11 @@
                   <li>Análise de métricas e KPIs</li>
                   <li>Suporte técnico dedicado</li>
                 </ul>
+                </div>
               </div>
 
-              <div class="feature__card">
+              <div class="swiper-slide">
+                <div class="feature__card">
                 <div class="feature__header">
                   <div class="feature__icon">🎨</div>
                   <h3 class="feature__title">Criativos e Copywriting</h3>
@@ -149,9 +154,11 @@
                   <li>Testes A/B contínuos</li>
                   <li>Banco de criativos vencedores</li>
                 </ul>
+                </div>
               </div>
 
-              <div class="feature__card">
+              <div class="swiper-slide">
+                <div class="feature__card">
                 <div class="feature__header">
                   <div class="feature__icon">🤖</div>
                   <h3 class="feature__title">Automações com IA</h3>
@@ -166,9 +173,11 @@
                   <li>Integrações com CRM</li>
                   <li>Análise preditiva de leads</li>
                 </ul>
+                </div>
               </div>
 
-              <div class="feature__card">
+              <div class="swiper-slide">
+                <div class="feature__card">
                 <div class="feature__header">
                   <div class="feature__icon">📄</div>
                   <h3 class="feature__title">Criação de Landing Pages</h3>
@@ -183,9 +192,11 @@
                   <li>Integração com marketing</li>
                   <li>Testes A/B e análise de performance</li>
                 </ul>
+                </div>
               </div>
 
-              <div class="feature__card">
+              <div class="swiper-slide">
+                <div class="feature__card">
                 <div class="feature__header">
                   <div class="feature__icon">🎯</div>
                   <h3 class="feature__title">Estratégia Digital</h3>
@@ -200,9 +211,11 @@
                   <li>Mapeamento da jornada</li>
                   <li>Plano estratégico 360°</li>
                 </ul>
+                </div>
               </div>
 
-              <div class="feature__card">
+              <div class="swiper-slide">
+                <div class="feature__card">
                 <div class="feature__header">
                   <div class="feature__icon">⚡</div>
                   <h3 class="feature__title">Otimização de Conversão</h3>
@@ -217,8 +230,11 @@
                   <li>Análise de comportamento</li>
                   <li>Otimização de checkout</li>
                 </ul>
+                </div>
               </div>
-              <div class="feature__card">
+
+              <div class="swiper-slide">
+                <div class="feature__card">
                 <div class="feature__header">
                   <div class="feature__icon">📱</div>
                   <h3 class="feature__title">Criação de Aplicativos</h3>
@@ -233,17 +249,18 @@
                   <li>Integração com APIs e sistemas</li>
                   <li>UI/UX design intuitivo</li>
                 </ul>
+                </div>
               </div>
             </div>
+            
+            <!-- Paginação Swiper -->
+            <div class="swiper-pagination"></div>
           </div>
 
           <!-- Controles de Navegação -->
           <div class="carousel-nav">
-            <button class="carousel-btn" id="prevBtn" aria-label="Serviço anterior">‹</button>
-            <div class="carousel-indicators" id="carouselIndicators">
-              <!-- Indicadores serão gerados dinamicamente pelo JavaScript -->
-            </div>
-            <button class="carousel-btn" id="nextBtn" aria-label="Próximo serviço">›</button>
+            <button class="swiper-button-prev carousel-btn" aria-label="Serviço anterior">‹</button>
+            <button class="swiper-button-next carousel-btn" aria-label="Próximo serviço">›</button>
           </div>
         </div>
 
@@ -500,10 +517,12 @@
             <span class="cta-text">Agendar Consultoria Gratuita Agora</span>
             <span class="cta-icon">🔥</span>
           </a>
-        </div>
       </div>
     </section>
 
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="script.js" defer></script>
   </body>
+</html>y>
 </html>

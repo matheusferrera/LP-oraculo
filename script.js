@@ -16,10 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     navLinks: document.querySelectorAll(".nav-link"),
     header: document.querySelector(".header"),
     rotator: document.querySelector(".logo-rotate"),
-    carousel: document.getElementById("servicesCarousel"),
-    prevBtn: document.getElementById("prevBtn"),
-    nextBtn: document.getElementById("nextBtn"),
-    indicatorsContainer: document.getElementById("carouselIndicators"),
     heroBtn: document.querySelector(".hero__cta"),
     conversionBtn: document.getElementById("conversionBtn"),
     fecharNegocioBtn: document.getElementById("fecharNegocioBtn"),
@@ -137,217 +133,141 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   })();
 
-  // ========== Carousel de Serviços ==========
-  (function initServicesCarousel() {
-    const { carousel, prevBtn, nextBtn, indicatorsContainer } = elements;
-
-    if (!carousel || !prevBtn || !nextBtn || !indicatorsContainer) return;
-
-    const cards = carousel.querySelectorAll(".feature__card");
-    const totalCards = cards.length;
-
-    let currentIndex = 0;
-    let cardsPerView = 3;
-    let maxIndex = Math.max(0, totalCards - cardsPerView);
-    let resizeTimeout;
-
-    // Função para calcular quantos cards mostrar baseado na largura da tela
-    function updateCardsPerView() {
-      const width = window.innerWidth;
-      if (width <= 900) {
-        cardsPerView = 1;
-      } else if (width <= 1200) {
-        cardsPerView = 2;
-      } else {
-        cardsPerView = 3;
-      }
-      maxIndex = Math.max(0, totalCards - cardsPerView);
-
-      if (currentIndex > maxIndex) {
-        currentIndex = maxIndex;
-      }
-
-      const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24;
-      const containerWidth = carousel.offsetWidth;
-      const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
-      cards.forEach((card) => {
-        card.style.flexBasis = cardWidth + "px";
-      });
+  // ========== Swiper Carousel de Serviços ==========
+  (function initServicesSwiper() {
+    // Verificar se o Swiper está disponível
+    if (typeof Swiper === 'undefined') {
+      console.error('Swiper não está carregado');
+      return;
     }
 
-    // Função para criar indicadores
-    function createIndicators() {
-      indicatorsContainer.innerHTML = "";
-      const totalSlides = maxIndex + 1;
+    const servicesSwiper = new Swiper('.servicesSwiper', {
+      // Configurações básicas
+      slidesPerView: 1,
+      spaceBetween: 24,
+      centeredSlides: false,
+      grabCursor: true,
+      
+      // Breakpoints responsivos
+      breakpoints: {
+        // Mobile pequeno
+        480: {
+          slidesPerView: 1,
+          spaceBetween: 20,
+        },
+        // Mobile grande / Tablet pequeno
+        640: {
+          slidesPerView: 1,
+          spaceBetween: 24,
+        },
+        // Tablet
+        900: {
+          slidesPerView: 2,
+          spaceBetween: 24,
+        },
+        // Desktop
+        1200: {
+          slidesPerView: 3,
+          spaceBetween: 32,
+        }
+      },
 
-      for (let i = 0; i < totalSlides; i++) {
-        const indicator = document.createElement("button");
-        indicator.className = "carousel-indicator";
-        indicator.setAttribute("aria-label", `Ir para slide ${i + 1}`);
-        indicator.addEventListener("click", () => goToSlide(i));
-        indicatorsContainer.appendChild(indicator);
-      }
-    }
+      // Paginação
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        dynamicBullets: true,
+        dynamicMainBullets: 3,
+      },
 
-    // Função para atualizar a posição do carousel
-    function updateCarousel() {
-      const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24;
-      const containerWidth = carousel.offsetWidth;
-      const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
-      const translateX = -(currentIndex * (cardWidth + gapValue));
+      // Navegação
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
 
-      carousel.style.transform = `translateX(${translateX}px)`;
+      // Suporte a teclado
+      keyboard: {
+        enabled: true,
+        onlyInViewport: true,
+      },
 
-      // Atualizar indicadores
-      const indicators = indicatorsContainer.querySelectorAll(".carousel-indicator");
-      indicators.forEach((indicator, index) => {
-        indicator.classList.toggle("active", index === currentIndex);
-      });
+      // Suporte a mousewheel (opcional)
+      mousewheel: {
+        forceToAxis: true,
+        sensitivity: 0.5,
+      },
 
-      // Atualizar estado dos botões
-      prevBtn.disabled = currentIndex === 0;
-      nextBtn.disabled = currentIndex === maxIndex;
-    }
+      // Efeitos e transições suaves
+      speed: 600,
+      effect: 'slide',
+      
+      // Otimizações para performance
+      watchSlidesProgress: true,
+      watchSlidesVisibility: true,
+      
+      // Lazy loading (se necessário)
+      preloadImages: false,
+      lazy: {
+        loadPrevNext: true,
+      },
 
-    // Função para ir para um slide específico
-    function goToSlide(index) {
-      currentIndex = Math.max(0, Math.min(index, maxIndex));
-      updateCarousel();
-    }
+      // Resistência ao deslizar além dos limites
+      resistance: true,
+      resistanceRatio: 0.85,
 
-    // Função para ir para o próximo slide
-    function nextSlide() {
-      if (currentIndex < maxIndex) {
-        currentIndex++;
-        updateCarousel();
-      }
-    }
+      // Loop desabilitado para melhor controle
+      loop: false,
 
-    // Função para ir para o slide anterior
-    function prevSlide() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        updateCarousel();
-      }
-    }
+      // Acessibilidade
+      a11y: {
+        prevSlideMessage: 'Slide anterior',
+        nextSlideMessage: 'Próximo slide',
+        firstSlideMessage: 'Este é o primeiro slide',
+        lastSlideMessage: 'Este é o último slide',
+      },
 
-    // Event listeners
-    nextBtn.addEventListener("click", nextSlide);
-    prevBtn.addEventListener("click", prevSlide);
-
-    // Suporte a teclado
-    carousel.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        prevSlide();
-      } else if (e.key === "ArrowRight") {
-        e.preventDefault();
-        nextSlide();
-      }
+      // Callback quando o swiper é inicializado
+      on: {
+        init: function () {
+          console.log('Swiper inicializado com sucesso!');
+        },
+        slideChange: function () {
+          // Adicionar animação suave aos cards ao mudar
+          const activeSlide = this.slides[this.activeIndex];
+          if (activeSlide) {
+            activeSlide.classList.add('swiper-slide-active-custom');
+          }
+        },
+      },
     });
 
-    // Suporte a touch/swipe melhorado
-    let startX = 0;
-    let startY = 0;
-    let currentX = 0;
-    let isDragging = false;
-    let hasMoved = false;
+    // Adicionar suporte a gestos de toque melhorados para mobile
+    if ('ontouchstart' in window) {
+      const swiperEl = document.querySelector('.servicesSwiper');
+      if (swiperEl) {
+        // Prevenir scroll vertical enquanto desliza horizontalmente
+        let touchStartY = 0;
+        let touchStartX = 0;
 
-    carousel.addEventListener(
-      "touchstart",
-      (e) => {
-        startX = e.touches[0].clientX;
-        startY = e.touches[0].clientY;
-        currentX = startX;
-        isDragging = true;
-        hasMoved = false;
-        carousel.style.transition = "none";
-      },
-      { passive: true }
-    );
+        swiperEl.addEventListener('touchstart', (e) => {
+          touchStartY = e.touches[0].clientY;
+          touchStartX = e.touches[0].clientX;
+        }, { passive: true });
 
-    carousel.addEventListener(
-      "touchmove",
-      (e) => {
-        if (!isDragging) return;
-        
-        currentX = e.touches[0].clientX;
-        const currentY = e.touches[0].clientY;
-        const diffX = Math.abs(currentX - startX);
-        const diffY = Math.abs(currentY - startY);
-        
-        // Apenas previne o default se o movimento for mais horizontal que vertical
-        if (diffX > diffY && diffX > 10) {
-          hasMoved = true;
-          e.preventDefault();
-          
-          // Adiciona feedback visual durante o arrasto
-          const dragOffset = (currentX - startX) * 0.3;
-          const gapValue = parseFloat(getComputedStyle(carousel).gap) || 24;
-          const containerWidth = carousel.offsetWidth;
-          const cardWidth = (containerWidth - (cardsPerView - 1) * gapValue) / cardsPerView;
-          const baseTranslate = -(currentIndex * (cardWidth + gapValue));
-          
-          carousel.style.transform = `translateX(${baseTranslate + dragOffset}px)`;
-        }
-      },
-      { passive: false }
-    );
+        swiperEl.addEventListener('touchmove', (e) => {
+          const touchMoveY = e.touches[0].clientY;
+          const touchMoveX = e.touches[0].clientX;
+          const diffY = Math.abs(touchMoveY - touchStartY);
+          const diffX = Math.abs(touchMoveX - touchStartX);
 
-    carousel.addEventListener(
-      "touchend",
-      (e) => {
-        if (!isDragging) return;
-        isDragging = false;
-
-        // Restaura a transição suave
-        carousel.style.transition = "transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-
-        if (!hasMoved) {
-          updateCarousel();
-          return;
-        }
-
-        const endX = e.changedTouches[0].clientX;
-        const diff = startX - endX;
-        const threshold = 50; // Mínimo de pixels para considerar um swipe
-        const velocity = Math.abs(diff);
-
-        // Considera tanto a distância quanto a velocidade
-        if (velocity > threshold) {
-          if (diff > 0 && currentIndex < maxIndex) {
-            nextSlide(); // Swipe left = próximo
-          } else if (diff < 0 && currentIndex > 0) {
-            prevSlide(); // Swipe right = anterior
-          } else {
-            updateCarousel(); // Volta para a posição atual
+          // Se o movimento horizontal é maior que o vertical, prevenir scroll
+          if (diffX > diffY) {
+            e.stopPropagation();
           }
-        } else {
-          updateCarousel(); // Volta para a posição atual
-        }
-      },
-      { passive: true }
-    );
-
-    // Redimensionamento da janela
-    function handleResize() {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        updateCardsPerView();
-        createIndicators();
-        updateCarousel();
-      }, 150);
+        }, { passive: false });
+      }
     }
-
-    window.addEventListener("resize", handleResize, { passive: true });
-
-    // Inicialização
-    updateCardsPerView();
-    createIndicators();
-    updateCarousel();
-
-    // Tornar o carousel focável para navegação por teclado
-    carousel.setAttribute("tabindex", "0");
   })();
 
   // ========== Efeito de Magnetismo para Botões ==========
